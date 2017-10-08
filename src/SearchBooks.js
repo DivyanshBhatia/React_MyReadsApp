@@ -4,21 +4,36 @@ import * as BooksAPI from './BooksAPI'
 import Book from './Book'
 
 class SearchBooks extends Component{
-	constructor(){
-		super();
-		this.state={
+	
+		state={
 			searchText:'',
 			searchedBooks:[]
 		}
+	
+	updateBookShelf=(searchedBooks,myBooks)=>{
+		return searchedBooks.map((searchedBook)=>{
+			myBooks.forEach((myBook) => {
+				if(myBook.id === searchedBook.id){
+					searchedBook.shelf=myBook.shelf
+					return
+				}
+			})
+		return searchedBook
+		})
 	}
 
 	updateSearch(e){
 		this.setState({searchText:e.target.value}) 
 		if(this.state.searchText.length > 0) { 
-			BooksAPI.search(this.state.searchText,20).then(res =>this.setState({searchedBooks: res}));			
+			BooksAPI.search(this.state.searchText,20).then((resBooks) => {
+			if(resBooks.length>0){
+				resBooks=this.updateBookShelf(resBooks,this.props.myBooks)
+				this.setState({searchedBooks:resBooks})	
+				}
+			})						
 		} else {
 			this.setState({searchedBooks: []})
-			console.log()
+			
 		}
 	}
 	render(){
@@ -41,16 +56,19 @@ class SearchBooks extends Component{
             <div className="search-books-results">
               <ol className="books-grid">
               	{this.state.searchedBooks.length > 0 && (
-              		this.state.searchedBooks.map(searchedBook => <Book key={searchedBook.id} book={searchedBook}/>)
+              		this.state.searchedBooks.map((searchedBook) => 
+              			<Book key={searchedBook.id} 
+              			book={searchedBook} 
+              			shelf={searchedBook.shelf} 
+              			onShelfChange={(shelf) => {
+          				this.props.onShelfChange(searchedBook, shelf)
+       				 }}/>)
               		)}
               </ol>
             </div>
           </div>
           )
-
 	}
-
-
 }
 
 export default SearchBooks
