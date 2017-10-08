@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import './App.css'
 import * as BooksAPI from './BooksAPI'
+import Book from './Book'
 
 class SearchBooks extends Component{
 	constructor(){
@@ -12,9 +13,13 @@ class SearchBooks extends Component{
 	}
 
 	updateSearch(e){
-		this.setState({searchText:e.target.value})
-		JSON.stringify(BooksAPI.search(this.state.searchText,20))
-
+		this.setState({searchText:e.target.value}) 
+		if(this.state.searchText.length > 0) { 
+			BooksAPI.search(this.state.searchText,20).then(res =>this.setState({searchedBooks: res}));			
+		} else {
+			this.setState({searchedBooks: []})
+			console.log()
+		}
 	}
 	render(){
 		return(
@@ -29,12 +34,16 @@ class SearchBooks extends Component{
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input value={this.state.searchText} onChange={this.updateSearch.bind(this)} type="text" placeholder="Search by title or author"/>
+                <input onChange={this.updateSearch.bind(this)} type="text" placeholder="Search by title or author"/>
 
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+              	{this.state.searchedBooks.length > 0 && (
+              		this.state.searchedBooks.map(searchedBook => <Book key={searchedBook.id} book={searchedBook}/>)
+              		)}
+              </ol>
             </div>
           </div>
           )
