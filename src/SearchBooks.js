@@ -2,7 +2,11 @@ import React,{Component} from 'react'
 import './App.css'
 import * as BooksAPI from './BooksAPI'
 import Book from './Book'
+import { Link } from 'react-router-dom'
 
+/*
+This component provides search functionality to the myReads App
+*/
 class SearchBooks extends Component{
 	
 		state={
@@ -12,6 +16,7 @@ class SearchBooks extends Component{
 	
 	updateBookShelf=(searchedBooks,myBooks)=>{
 		return searchedBooks.map((searchedBook)=>{
+			
 			myBooks.forEach((myBook) => {
 				if(myBook.id === searchedBook.id){
 					searchedBook.shelf=myBook.shelf
@@ -27,6 +32,9 @@ class SearchBooks extends Component{
 		if(this.state.searchText.length > 0) { 
 			BooksAPI.search(this.state.searchText,20).then((resBooks) => {
 			if(resBooks.length>0){
+				resBooks.forEach((resBook) => {
+					resBook.shelf = 'none'
+				})
 				resBooks=this.updateBookShelf(resBooks,this.props.myBooks)
 				this.setState({searchedBooks:resBooks})	
 				}
@@ -40,6 +48,7 @@ class SearchBooks extends Component{
 		return(
 		<div className="search-books">
             <div className="search-books-bar">
+            <Link className="close-search" to="/">Close</Link>
               <div className="search-books-input-wrapper">
                 {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
@@ -61,7 +70,8 @@ class SearchBooks extends Component{
               			book={searchedBook} 
               			shelf={searchedBook.shelf} 
               			onShelfChange={(shelf) => {
-          				this.props.onShelfChange(searchedBook, shelf)
+          				this.props.onShelfChange(searchedBook, shelf);
+          				searchedBook.shelf=shelf //Not reloading the page here to enhance user experience
        				 }}/>)
               		)}
               </ol>

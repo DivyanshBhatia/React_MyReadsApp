@@ -2,6 +2,9 @@ import React,{Component} from 'react'
 import './App.css'
 import Book from './Book'
 
+/*
+This component handles each individual shelf
+*/
 class MyBookShelf extends Component{
 
 	render(){

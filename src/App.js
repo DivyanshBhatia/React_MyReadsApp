@@ -4,6 +4,11 @@ import SearchBooks from './SearchBooks'
 import * as BooksAPI from './BooksAPI'
 import MyBooks from './MyBooks'
 import { Route, Link } from 'react-router-dom'
+
+/*
+This component is responsible for the primary app and its contolling structure. 
+If there are no books the shelves will be empty
+*/ 
 class BooksApp extends React.Component {
   state = {
     /**
@@ -36,14 +41,6 @@ class BooksApp extends React.Component {
       <div className="app">
         <Route
             exact
-            path="/searchBooks"
-            render={() => (
-          <SearchBooks myBooks={this.state.books} onShelfChange={(searchedBook,shelf)=>{
-            this.changeShelf(searchedBook,shelf)
-          }}/>
-          )}/>
-        <Route
-            exact
             path="/"
             render={(history) => (
           <div className="list-books">
@@ -62,7 +59,14 @@ class BooksApp extends React.Component {
           </div>
           </div>
           )}/>
-          
+        <Route
+            exact
+            path="/searchBooks"
+            render={() => (
+          <SearchBooks myBooks={this.state.books} onShelfChange={(searchedBook,shelf)=>{
+            this.changeShelf(searchedBook,shelf)
+          }}/>
+          )}/>              
       </div>
     )
   }

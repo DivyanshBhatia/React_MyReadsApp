@@ -1,6 +1,10 @@
 import React,{Component} from 'react'
 import './App.css'
 import MyBookShelf from './MyBookShelf'
+
+/*
+This component is responsible to categorize books in various shelves
+*/
 class MyBooks extends Component{
 
 	shelfArray = [
